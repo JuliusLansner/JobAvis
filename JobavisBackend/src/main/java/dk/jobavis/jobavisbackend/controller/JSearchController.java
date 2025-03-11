@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api")
-public class JSearchController extends JobData {
+public class JSearchController{
 
     private final JSearchApiService jsearchApiService;
 

@@ -5,14 +5,14 @@ import { JobData } from "../@types/JobData";
 function JobSearchForm() {
 
   const [searchParams, setSearchParams] = useState<JobSearchParams>({
-    query: "Backend udvikler",
+    query: "backend udvikler københavn",
     page:1,
     num_pages:1,
     country:"dk",
-    language:"da",
-    date_posted:"week",
+    language:"en",
+    date_posted:"all",
     employment_types:"FULLTIME",
-    radius:100
+    radius:500
 
 });
 
@@ -21,8 +21,12 @@ function JobSearchForm() {
 console.log("DATA++",data)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
- 
+
   };
+
+
+
+
 console.log("PARAMs++",searchParams)
   return (
     <div>
@@ -45,6 +49,7 @@ console.log("PARAMs++",searchParams)
             <li key={job.job_id}>
               <h3>{job.job_title}</h3>
               <p>{job.employer_name}</p>
+              
             </li>
           ))}
         </ul>

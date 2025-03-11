@@ -1,5 +1,7 @@
 package dk.jobavis.jobavisbackend.service;
 
+import dk.jobavis.jobavisbackend.dto.JDetailsParameters;
+import dk.jobavis.jobavisbackend.dto.JDetailsResponse;
 import dk.jobavis.jobavisbackend.dto.JSearchResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,5 +56,22 @@ public class JSearchApiService {
                 .header("x-rapidapi-host",rapidApiHost)
                 .retrieve()
                 .bodyToMono(JSearchResponse.class);
+    }
+
+
+    public Mono<JDetailsResponse> jobDetails(String job_id, String country){
+        System.out.println("JOBID: "+job_id);
+        System.out.println("COUNTRY: "+country);
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/job-details")
+                        .queryParam("job_id",job_id)
+                        .queryParam("country",country)
+                        .build())
+                .header("x-rapidapi-key",rapidApiKey)
+                .header("x-rapidapi-host",rapidApiHost)
+                .retrieve()
+                .bodyToMono(JDetailsResponse.class);
     }
 }
