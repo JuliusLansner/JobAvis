@@ -1,7 +1,6 @@
 package dk.jobavis.jobavisbackend.controller;
 
 import dk.jobavis.jobavisbackend.dto.JSearchResponse;
-import dk.jobavis.jobavisbackend.dto.JobData;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
