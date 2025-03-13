@@ -41,5 +41,6 @@ public class JobDetails {
     private String job_onet_soc;
     private String job_onet_job_zone;
     private List<EmployerReviews> employer_reviews;
+    private JobHighlights job_highlights;
 
 }

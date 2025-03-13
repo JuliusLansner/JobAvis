@@ -18,10 +18,10 @@ public class JSearchApiService {
 
 
     @Value("${rapidapi.key}")
-    private String rapidApiKey;
+    String rapidApiKey;
 
     @Value("${rapidapi.host}")
-    private String rapidApiHost;
+    String rapidApiHost;
 
 
 
@@ -60,8 +60,6 @@ public class JSearchApiService {
 
 
     public Mono<JDetailsResponse> jobDetails(String job_id, String country){
-        System.out.println("JOBID: "+job_id);
-        System.out.println("COUNTRY: "+country);
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
