@@ -1,15 +1,15 @@
 package dk.jobavis.jobavisbackend.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
+
+@Data
 public class JobDetails {
     private String job_id;
     private String job_title;

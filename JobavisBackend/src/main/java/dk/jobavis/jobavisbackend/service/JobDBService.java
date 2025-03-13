@@ -19,22 +19,26 @@ public class JobDBService {
         this. jobDetailsResultRepository = jobDetailsResultRepository;
         this.objectMapper = objectMapper;
     }
-    public JobSearchResult saveJobSearch(String query,Object searchResponse){
+    public JobSearchResult saveJobSearch(String query, Object jsonResponse){
         try{
-            String json = objectMapper.writeValueAsString(searchResponse);
-            JobSearchResult entity = new JobSearchResult(query,json);
-            return jobSearchResultRepository.save(entity);
+            String json = objectMapper.writeValueAsString(jsonResponse);
+            JobSearchResult entity = new JobSearchResult(query, json);
+            JobSearchResult saved = jobSearchResultRepository.save(entity);
+            return saved;
+
         }catch(Exception e){
             throw new RuntimeException("Failed: Converting search response to JSON failed");
         }
     }
-    public JobDetailsResult saveJobDetails(String jobId,Object detailsResponse){
+    public JobDetailsResult saveJobDetails(String jobId,Object jsonResponse){
         try{
-            String json = objectMapper.writeValueAsString(detailsResponse);
+            String json = objectMapper.writeValueAsString(jsonResponse);
             JobDetailsResult entity = new JobDetailsResult(jobId,json);
-            return jobDetailsResultRepository.save(entity);
+            JobDetailsResult saved = jobDetailsResultRepository.save(entity);
+            return saved;
             } catch(Exception e){
             throw new RuntimeException("Failed: Converting details response to JSON failed");
         }
     }
+
 }

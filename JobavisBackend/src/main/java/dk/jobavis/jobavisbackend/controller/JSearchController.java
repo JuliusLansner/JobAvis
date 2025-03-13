@@ -2,6 +2,8 @@ package dk.jobavis.jobavisbackend.controller;
 
 import dk.jobavis.jobavisbackend.dto.JSearchResponse;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
+import dk.jobavis.jobavisbackend.service.JobDBService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,15 +15,16 @@ import reactor.core.publisher.Mono;
 public class JSearchController{
 
     private final JSearchApiService jsearchApiService;
+    private final JobDBService jobDBService;
 
 
-    public JSearchController(JSearchApiService jsearchApiService){
+    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService){
         this.jsearchApiService = jsearchApiService;
-
+        this.jobDBService = jobDBService;
     }
 
     @GetMapping("/search")
-    public Mono<JSearchResponse> search(
+    public ResponseEntity<JSearchResponse> search(
             @RequestParam String query,
             @RequestParam(required = false) int page,
             @RequestParam(name = "num_pages") int num_pages,
@@ -32,6 +35,8 @@ public class JSearchController{
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
             @RequestParam(required = false) int radius
     ){
-        return jsearchApiService.searchJobs(query,page,num_pages,country,language,date_posted,employment_types,job_requirements,radius);
+        JSearchResponse response = jsearchApiService.searchJobs(query,page,num_pages,country,language,date_posted,employment_types,job_requirements,radius);
+        jobDBService.saveJobSearch(query,response);
+        return ResponseEntity.ok(response);
     }
 }
