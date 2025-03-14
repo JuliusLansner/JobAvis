@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import './App.css'
+import './styles/App.css'
 import { ReactElement } from 'react';
-import JobSearchForm from './pages/JobSearchForm';
+//import JobSearchForm from './pages/JobSearchForm';
+import JobOptionsPage from './pages/JobOptionsPage';
 
 
 const queryClient = new QueryClient({
@@ -18,7 +19,7 @@ function App(): ReactElement {
     <>
       <QueryClientProvider client={queryClient}>
         <div>
-          <JobSearchForm/>
+          <JobOptionsPage />
         </div>
 
       </QueryClientProvider>

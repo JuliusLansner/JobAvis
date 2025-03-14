@@ -1,0 +1,89 @@
+#root {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.form-container {
+  background-color: #252525;
+  width: 100%;
+  padding: 40px 0;
+}
+
+form {
+  max-width: 85%;
+  display: flex;
+  justify-content: space-evenly;
+  justify-items: center;
+  margin: 0 auto;
+}
+
+.query-input {
+  width: 15%;
+}
+
+.keyword-input {
+  width: 15%;
+}
+
+.radius-input {
+  width: 5%;
+}
+
+form input, form input::placeholder {
+  background-color: transparent;
+  border: 0;
+  color: white;
+  font-size: 14px;
+}
+
+form input:focus-visible {
+  outline: none !important;
+}
+
+.ant-select {
+  margin-top: 5px !important;
+}
+
+.ant-select-selector  {
+  background-color: transparent !important;
+  border: 0 !important;
+  color: white !important;
+}
+
+/* Remove border and outline when focused or open */
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Change text color when clicked (focused/open) */
+.ant-select-focused .ant-select-selection-item,
+.ant-select-open .ant-select-selection-item {
+  color: white !important; /* Change to your desired color */
+}
+
+
+/* Select arrow styles */
+.ant-select-arrow {
+  color: white !important;
+}
+
+.ant-select-arrow svg {
+  height: 0.8em;
+  width: 0.8em;
+}
+
+
+.search-btn {
+  background-color: #05986C;
+  color: white;
+  border: none;
+  padding: 10px 40px;
+}
+
+.search-btn:hover {
+  border: none;
+}
