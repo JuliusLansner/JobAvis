@@ -38,6 +38,8 @@ console.log("PARAMs++",searchParams)
           }
           placeholder="Search..."
         />
+
+        
       
         <button type="submit">Search</button>
       </form>
