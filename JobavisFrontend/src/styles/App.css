@@ -1,8 +1,21 @@
 #root {
-  width: 100%;
   margin: 0 auto;
   text-align: center;
 }
+
+/* Header */
+.header-container {
+  margin: 0 auto;
+  max-width: 85%;
+  text-align: left;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.header-container p {
+  margin-bottom: 0;
+}
+
 
 .form-container {
   background-color: #252525;
@@ -13,9 +26,10 @@
 form {
   max-width: 85%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   justify-items: center;
   margin: 0 auto;
+  flex-wrap: wrap;
 }
 
 .query-input {
@@ -87,3 +101,5 @@ form input:focus-visible {
 .search-btn:hover {
   border: none;
 }
+
+

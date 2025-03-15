@@ -35,7 +35,6 @@ console.log("PARAMs++",searchParams)
 
     <div className="form-container">
       <form onSubmit={handleSubmit}>
-
         <input
           value={searchParams.query}
           onChange={(e) =>
@@ -98,7 +97,7 @@ console.log("PARAMs++",searchParams)
     </div>
 
       {isLoading && <div>Loading...</div>}
-      {isError && <div>En fejl opstod ved søgning af jobs.</div>}
+      {isError && <div>En fejl opstod ved søgning efter jobs.</div>}
       {data && data.data && data.data.length > 0 ? (
         <ul>
           {data.data.map((job: JobData) => (
