@@ -28,7 +28,6 @@ console.log("DATA++",data)
 
   };
 
-
 console.log("PARAMs++",searchParams)
   return (
     <div>
@@ -104,6 +103,7 @@ console.log("PARAMs++",searchParams)
             <li key={job.job_id}>
               <h3>{job.job_title}</h3>
               <p>{job.employer_name}</p>
+              
               
             </li>
           ))}
