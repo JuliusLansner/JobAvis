@@ -1,8 +1,13 @@
 package dk.jobavis.jobavisbackend.controller;
 
 import dk.jobavis.jobavisbackend.dto.JSearchResponse;
+import dk.jobavis.jobavisbackend.dto.JobData;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
 import dk.jobavis.jobavisbackend.service.JobDBService;
+import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,13 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class JSearchController{
 
     private final JSearchApiService jsearchApiService;
     private final JobDBService jobDBService;
-
+    private static final Logger logger = LoggerFactory.getLogger(JSearchController.class);
 
     public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService){
         this.jsearchApiService = jsearchApiService;
@@ -26,17 +33,32 @@ public class JSearchController{
     @GetMapping("/search")
     public ResponseEntity<JSearchResponse> search(
             @RequestParam String query,
-            @RequestParam(required = false) int page,
-            @RequestParam(name = "num_pages") int num_pages,
-            @RequestParam(required = false) String country,
-            @RequestParam(required = false) String language,
-            @RequestParam(name = "date_posted") String date_posted,
-            @RequestParam(name = "employment_types") String employment_types,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(name = "num_pages",defaultValue = "1") int num_pages,
+            @RequestParam(required = false,defaultValue = "dk") String country,
+            @RequestParam(required = false,defaultValue = "da") String language,
+            @RequestParam(name = "date_posted",defaultValue = "all") String date_posted,
+            @RequestParam(name = "employment_types",defaultValue = "FULLTIME") String employment_types,
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
-            @RequestParam(required = false) int radius
+            @RequestParam(required = false,defaultValue = "500") int radius,
+            @RequestParam(required = false) String keyWords
     ){
-        JSearchResponse response = jsearchApiService.searchJobs(query,page,num_pages,country,language,date_posted,employment_types,job_requirements,radius);
-        jobDBService.saveJobSearch(query,response);
-        return ResponseEntity.ok(response);
+
+        try{
+            logger.info("Starting job search with query={}", query);
+            JSearchResponse response = jsearchApiService.searchJobs(query,page,num_pages,country,language,date_posted,employment_types,job_requirements,radius);
+            jobDBService.saveJobSearch(query,response);
+            // for future filtration needs
+            //List<JobData> jobList = response.getData();
+
+
+
+
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            logger.error("error: ",e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 }
