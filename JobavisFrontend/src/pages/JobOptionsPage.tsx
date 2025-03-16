@@ -115,21 +115,80 @@ console.log("PARAMs++",searchParams)
 
 
       {dbd && db && db.data && db.data.length > 0 ? (
-        <div>
-        <ul>
+        <div className="job-results">
+        <ul className="jobs-list">
           {db.data.map((job: JobData) => (
-            <li key={job.job_id}>
-              <h3>{job.job_title}</h3>
-              <p>{job.employer_name}</p>
+            <li className="single-job" key={job.job_id}>
+              <div className="jobcontainer-left">
+                <img />
+              </div>
+              <div className="jobcontainer-middle">
+                <h3 className="job-title">{job.job_title}</h3>
+                <p className="employer-name">{job.employer_name}</p>
+                <p className="job-location">{job.job_location}</p>
+              </div>
+              <div className="jobcontainer-right">
+                <p className="employment-type">{job.job_employment_type}</p>
+              </div>
              
             </li>
           ))}  
           
         </ul>
 
-        <ul>
+        <ul className="job-details">
           {dbd.data.map((job: JobDetails) => (
-              <li key = {job.job_title}>DBD + {job.job_title}</li>
+              <li className="single-job-details" key={job.job_title}>
+                <div className="details-top">
+                  <div>
+                    <img src={job.employer_logo} className="employer-logo"/>
+                  </div>
+                  <div>
+                    <h3 className="job-details-title">{job.job_title}</h3>
+                    <p className="employer-name">{job.employer_name}</p>
+                    <a href={job.job_apply_link} className="apply-btn" target="_blank" rel="noopener noreferrer">Søg job</a>
+                  </div>
+                </div>
+                <div className="details-middle">
+                <thead>
+                  <tr>
+                    <th scope="col">Opslået</th>
+                    <th scope="col">Jobtype</th>
+                    <th scope="col">Lokation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {job.job_posted_at_datetime_utc
+                        ? new Date(job.job_posted_at_datetime_utc).toLocaleDateString("da-DK", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit"
+                          })
+                        : "Ukendt dato"}
+                    </td>
+                    <td>{job.job_employment_type}</td>
+                    <td>{job.job_location}</td>
+                  </tr>
+                </tbody>
+                </div>
+                <div className="details-bottom">
+                  <p className="about-job">Om jobbet</p>
+                  
+
+                  <p className="job-description">
+                    {job.job_description.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </p>
+                </div>
+              </li>
           ))}  
           
         </ul>

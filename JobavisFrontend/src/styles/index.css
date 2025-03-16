@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Instrument+Sans");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap");
 
 * {
   font-family: "Instrument Sans", sans-serif;
@@ -47,6 +47,6 @@ button {
 @media (prefers-color-scheme: light) {
   :root {
     color: black;
-    background-color: #ffffff;
+    background-color: #F9F9F9;
   }
 }
