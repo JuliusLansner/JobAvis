@@ -1,0 +1,42 @@
+package dk.jobavis.jobavisbackend.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.jobavis.jobavisbackend.dto.JSearchResponse;
+import dk.jobavis.jobavisbackend.entity.JobSearchResult;
+import dk.jobavis.jobavisbackend.repository.JobSearchResultRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api")
+public class DBFetchController {
+    private final JobSearchResultRepository jobSearchResultRepository;
+    private final ObjectMapper objectMapper;
+    private final Logger logger = LoggerFactory.getLogger(JDetailsController.class);
+
+    public DBFetchController(JobSearchResultRepository jobSearchResultRepository, ObjectMapper objectMapper) {
+        this.jobSearchResultRepository = jobSearchResultRepository;
+        this.objectMapper = objectMapper;
+    }
+    @GetMapping("/dbfetch/{id}")
+    public ResponseEntity<?> fetchJsonFromDB(@PathVariable("id") String id){
+        try{
+            logger.info("DB fetch with ID: {}", id);
+            JobSearchResult entity = jobSearchResultRepository.findById(Long.valueOf(id))
+                    .orElseThrow(() -> new RuntimeException("Error: No DB entry found with ID= "+id));
+
+            String rawJson = entity.getJsonResponse();
+
+            JSearchResponse parsedJson = objectMapper.readValue(rawJson,JSearchResponse.class);
+
+            return ResponseEntity.ok(parsedJson);
+        }catch(Exception e){
+            logger.error("Error: {}", String.valueOf(e));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+}

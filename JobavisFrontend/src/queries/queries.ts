@@ -28,8 +28,19 @@ export const useFetchDBJobsByID = (id:string |undefined) =>{
         staleTime:600000
     })
 }
+export const useFetchDBDetailsByID = (id:string |undefined) =>{
+    return useQuery({
+        queryKey:["fetchDbD",id],
+        queryFn: async()=>{
+            const{data} = await searchAxios.get('/dbfetchdetails/'+id)
+                
+            return data;
+        },
+        staleTime:600000
+    })
+}
 
-export const useFetchDetailsById = (id:string) =>{
+export const useFetchDetailsById = (id:string | undefined) =>{
     return useQuery({
         queryKey:["fetchDetails",id],
         queryFn:async() =>{

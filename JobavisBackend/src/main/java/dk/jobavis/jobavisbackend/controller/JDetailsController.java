@@ -28,7 +28,7 @@ public class JDetailsController{
 
 
 
-    @GetMapping("/job-details")
+    @GetMapping("/job-details/{id}")
     public ResponseEntity<JDetailsResponse> details(
             @RequestParam(name = "job_id") String job_id,
             @RequestParam(name = "country",defaultValue = "dk") String country
