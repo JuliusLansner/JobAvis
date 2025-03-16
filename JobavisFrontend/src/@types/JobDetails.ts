@@ -8,7 +8,7 @@ export interface JobDetails{
     job_employment_type?: string;
     job_apply_link?: string;
     apply_options?: string[];
-    job_description?: string;
+    job_description: string;
     job_is_remote?: boolean;
     job_posted_at?: string;
     job_posted_at_timestamp?: string;

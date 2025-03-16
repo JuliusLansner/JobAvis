@@ -120,7 +120,7 @@ console.log("PARAMs++",searchParams)
           {db.data.map((job: JobData) => (
             <li className="single-job" key={job.job_id}>
               <div className="jobcontainer-left">
-                <img />
+              <img src={job.employer_logo} className="employer-logo"/>
               </div>
               <div className="jobcontainer-middle">
                 <h3 className="job-title">{job.job_title}</h3>
