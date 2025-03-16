@@ -41,7 +41,8 @@ public class JSearchController{
             @RequestParam(name = "employment_types",defaultValue = "FULLTIME") String employment_types,
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
             @RequestParam(required = false,defaultValue = "500") int radius,
-            @RequestParam(required = false) String keyWords
+            @RequestParam(required = false) String keyWords,
+            @RequestParam(required = false) String icon
     ){
 
         try{

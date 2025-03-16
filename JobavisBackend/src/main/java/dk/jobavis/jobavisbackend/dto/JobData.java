@@ -12,8 +12,8 @@ public class JobData {
     private String job_id;
     private String job_title;
     private String employer_name;
-    private String job_description;
     private String job_location;
     private String job_employment_type;
-
+    private String employer_logo;
+    private String job_posted_at;
 }
