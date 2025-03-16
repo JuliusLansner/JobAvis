@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useFetchJobs } from "../queries/queries";
+import React, {  useState } from "react";
+import { useFetchDBJobsByID, useFetchJobs } from "../queries/queries";
 import { JobSearchParams } from "../@types/JobSearchParams";
 import { JobData } from "../@types/JobData";
 import { Select } from "antd";
@@ -9,7 +9,7 @@ function JobOptionsPage() {
   const { Option } = Select;
 
   const [searchParams, setSearchParams] = useState<JobSearchParams>({
-    query: "backend udvikler københavn",
+    query: "1",
     page:1,
     num_pages:1,
     country:"dk",
@@ -20,13 +20,19 @@ function JobOptionsPage() {
 
 });
 
+const [searchId, setSearchId] = useState<string | undefined>();
 
-  const { data, isLoading, isError } = useFetchJobs(searchParams);
-console.log("DATA++",data)
+const {data,isLoading,isError} = useFetchDBJobsByID(searchId);
+ 
+
+ 
+ //  const { data, isLoading, isError } = useFetchJobs(searchParams);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-  };
+    setSearchId(searchParams.query)
+    
+  }; 
 
 
 console.log("PARAMs++",searchParams)

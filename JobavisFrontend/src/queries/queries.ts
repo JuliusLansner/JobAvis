@@ -16,3 +16,25 @@ export const useFetchJobs = (searchParams:JobSearchParams) =>{
         staleTime:600000
     });
 }
+
+export const useFetchDBJobsByID = (id:string |undefined) =>{
+    return useQuery({
+        queryKey:["fetchDb",id],
+        queryFn: async()=>{
+            const{data} = await searchAxios.get('/dbfetch/'+id)
+                
+            return data;
+        },
+        staleTime:600000
+    })
+}
+
+export const useFetchDetailsById = (id:string) =>{
+    return useQuery({
+        queryKey:["fetchDetails",id],
+        queryFn:async() =>{
+            const {data} = await searchAxios.get("/job-details/"+id)
+            return data;
+        }
+    })
+}
