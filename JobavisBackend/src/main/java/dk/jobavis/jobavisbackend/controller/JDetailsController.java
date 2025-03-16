@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 
@@ -28,16 +25,16 @@ public class JDetailsController{
 
 
 
-    @GetMapping("/job-details/{id}")
+    @GetMapping("/job-details/{jobId}")
     public ResponseEntity<JDetailsResponse> details(
-            @RequestParam(name = "job_id") String job_id,
+            @PathVariable String jobId,
             @RequestParam(name = "country",defaultValue = "dk") String country
     ){
 
         try {
-            logger.info("Starting job details search with ID={}", job_id);
-            JDetailsResponse response = jSearchApiService.jobDetails(job_id,country);
-            jobDBService.saveJobDetails(job_id,response);
+            logger.info("Starting job details search with ID={}", jobId);
+            JDetailsResponse response = jSearchApiService.jobDetails(jobId,country);
+            jobDBService.saveJobDetails(jobId,response);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
