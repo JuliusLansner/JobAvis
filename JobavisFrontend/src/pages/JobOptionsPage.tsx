@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { useFetchJobs } from "../queries/queries";
+import React, {  useState } from "react";
+import { useFetchDBJobsByID, useFetchDetailsById, useFetchJobs,useFetchDBDetailsByID } from "../queries/queries";
 import { JobSearchParams } from "../@types/JobSearchParams";
 import { JobData } from "../@types/JobData";
 import { Select } from "antd";
+import { JobDetails } from "../@types/JobDetails";
 
 function JobOptionsPage() {
 
   const { Option } = Select;
 
   const [searchParams, setSearchParams] = useState<JobSearchParams>({
-    query: "backend udvikler københavn",
+    query: "asdasdasd",
     page:1,
     num_pages:1,
     country:"dk",
@@ -20,13 +21,26 @@ function JobOptionsPage() {
 
 });
 
+const [searchId, setSearchId] = useState<string | undefined>();
+const [searchIdDetails, setSearchIdDetails] = useState<string | undefined>();
 
-  const { data, isLoading, isError } = useFetchJobs(searchParams);
-console.log("DATA++",data)
+
+//Fetching from DB:
+const {data:db,isLoading,isError} = useFetchDBJobsByID(searchId);
+const {data:dbd} = useFetchDBDetailsByID(searchIdDetails);
+
+
+//Fetching from RapidAPI:
+//const {data:details} = useFetchDetailsById();
+//const { data, isLoading, isError } = useFetchJobs();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-  };
+    if(searchParams.query.includes("d")){
+    setSearchIdDetails(searchParams.query[0])
+    } else 
+    setSearchId(searchParams.query)
+  }; 
 
 
 console.log("PARAMs++",searchParams)
@@ -98,17 +112,32 @@ console.log("PARAMs++",searchParams)
 
       {isLoading && <div>Loading...</div>}
       {isError && <div>En fejl opstod ved søgning efter jobs.</div>}
-      {data && data.data && data.data.length > 0 ? (
+
+
+      {dbd && db && db.data && db.data.length > 0 ? (
+        <div>
         <ul>
-          {data.data.map((job: JobData) => (
+          {db.data.map((job: JobData) => (
             <li key={job.job_id}>
               <h3>{job.job_title}</h3>
               <p>{job.employer_name}</p>
-              
+             
             </li>
-          ))}
+          ))}  
+          
         </ul>
-      ) : (
+
+        <ul>
+          {dbd.data.map((job: JobDetails) => (
+              <li key = {job.job_title}>DBD + {job.job_title}</li>
+          ))}  
+          
+        </ul>
+
+        </div>
+
+        
+        ) : (
         <p>Ingen resultater blev fundet.</p>
       )}
     </div>
