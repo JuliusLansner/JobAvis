@@ -263,3 +263,8 @@ td {
 
 
 
+/* Active style for clicked job */
+.single-job.active {
+  background-color: #F1F9F6;
+  border-left: 4px solid #b5e2d2;
+}
