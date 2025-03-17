@@ -25,9 +25,9 @@ public class JDetailsController{
 
 
 
-    @GetMapping("/job-details/{jobId}")
+    @GetMapping("/job-details")
     public ResponseEntity<JDetailsResponse> details(
-            @PathVariable String jobId,
+            @RequestParam(name = "job_id") String jobId,
             @RequestParam(name = "country",defaultValue = "dk") String country
     ){
 
@@ -35,6 +35,7 @@ public class JDetailsController{
             logger.info("Starting job details search with ID={}", jobId);
             JDetailsResponse response = jSearchApiService.jobDetails(jobId,country);
             jobDBService.saveJobDetails(jobId,response);
+            System.out.println("JOBID++: "+jobId+" RESPONSE++: "+response);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -36,10 +36,10 @@ const {data:dbd} = useFetchDBDetailsByID(searchIdDetails);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(searchParams.query.includes("d")){
-    setSearchIdDetails(searchParams.query[0])
-    } else 
+    if(searchParams.query.length<2){
     setSearchId(searchParams.query)
+    } else 
+    setSearchIdDetails(searchParams.query)
   }; 
 
 

@@ -12,10 +12,7 @@ import javax.annotation.processing.Generated;
 @Entity
 public class JobDetailsResult {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    public String jobId;
+   public String jobId;
 
 
     @Column(name = "json_response",columnDefinition = "TEXT")

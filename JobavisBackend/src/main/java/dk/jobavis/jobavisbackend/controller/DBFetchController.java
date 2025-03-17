@@ -43,11 +43,11 @@ public class DBFetchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @GetMapping("/dbfetchdetails/{id}")
-    public ResponseEntity<?> fetchJsonDetailsFromDB(@PathVariable("id") String id){
+    @GetMapping("/dbfetchdetails/{job_id}")
+    public ResponseEntity<?> fetchJsonDetailsFromDB(@PathVariable("job_id") String id){
         try{
             logger.info("DB fetch with ID: {}", id);
-            JobDetailsResult entity = jobDetailsResultRepository.findById(Long.valueOf(id))
+            JobDetailsResult entity = jobDetailsResultRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Error: No DB entry found with ID= "+id));
 
             String rawJson = entity.getJsonResponse();
