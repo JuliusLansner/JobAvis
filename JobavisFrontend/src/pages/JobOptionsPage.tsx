@@ -114,8 +114,8 @@ console.log("PARAMs++",searchParams)
       {isError && <div>En fejl opstod ved søgning efter jobs.</div>}
 
 
-      {dbd && db && db.data && db.data.length > 0 ? (
-        <div className="job-results">
+      <div className="job-results">
+      {db && db.data && db.data.length > 0 ? (
         <ul className="jobs-list">
           {db.data.map((job: JobData) => (
             <li className="single-job" key={job.job_id}>
@@ -136,6 +136,13 @@ console.log("PARAMs++",searchParams)
           
         </ul>
 
+        
+        ) : (
+        <p>Ingen resultater blev fundet.</p>
+      )}
+
+
+        {dbd && dbd.data && dbd.data.length > 0 ? (
         <ul className="job-details">
           {dbd.data.map((job: JobDetails) => (
               <li className="single-job-details" key={job.job_title}>
@@ -192,13 +199,11 @@ console.log("PARAMs++",searchParams)
           ))}  
           
         </ul>
-
-        </div>
-
         
-        ) : (
-        <p>Ingen resultater blev fundet.</p>
+      ) : (
+        <p>Jobopslag kunne ikke vises.</p>
       )}
+      </div>
     </div>
 
   );
