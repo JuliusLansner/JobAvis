@@ -30,6 +30,16 @@ const {data:db,isLoading,isError} = useFetchDBJobsByID(searchId);
 const {data:dbd} = useFetchDBDetailsByID(searchIdDetails);
 
 
+// State for selected job ID
+const [selectedJobId, setSelectedJobId] = useState<string | undefined>();
+
+// Fetch job details based on selected job ID
+const { data: jobDetailsData } = useFetchDBDetailsByID(selectedJobId); // Replace with actual API hook
+
+
+
+
+
 //Fetching from RapidAPI:
 //const {data:details} = useFetchDetailsById();
 //const { data, isLoading, isError } = useFetchJobs();
@@ -118,7 +128,13 @@ console.log("PARAMs++",searchParams)
       {db && db.data && db.data.length > 0 ? (
         <ul className="jobs-list">
           {db.data.map((job: JobData) => (
-            <li className="single-job" key={job.job_id}>
+            <li className={`single-job ${selectedJobId === job.job_id ? "active" : ""}`} 
+                key={job.job_id}
+                onClick={() => {
+                  console.log("Clicked job ID:", job.job_id);
+                  setSelectedJobId(job.job_id);
+                }} // Set job ID on click
+                >
               <div className="jobcontainer-left">
               <img src={job.employer_logo} className="employer-logo"/>
               </div>
@@ -141,19 +157,18 @@ console.log("PARAMs++",searchParams)
         <p>Ingen resultater blev fundet.</p>
       )}
 
-
-        {dbd && dbd.data && dbd.data.length > 0 ? (
+        {/* Show job details only if selectedJobId is set and details are available */}
+        {selectedJobId && jobDetailsData && (
         <ul className="job-details">
-          {dbd.data.map((job: JobDetails) => (
-              <li className="single-job-details" key={job.job_title}>
+              <li className="single-job-details">
                 <div className="details-top">
                   <div>
-                    <img src={job.employer_logo} className="employer-logo"/>
+                    <img src={jobDetailsData.employer_logo} className="employer-logo"/>
                   </div>
                   <div>
-                    <h3 className="job-details-title">{job.job_title}</h3>
-                    <p className="employer-name">{job.employer_name}</p>
-                    <a href={job.job_apply_link} className="apply-btn" target="_blank" rel="noopener noreferrer">Søg job</a>
+                    <h3 className="job-details-title">{jobDetailsData.job_title}</h3>
+                    <p className="employer-name">{jobDetailsData.employer_name}</p>
+                    <a href={jobDetailsData.job_apply_link} className="apply-btn" target="_blank" rel="noopener noreferrer">Søg job</a>
                   </div>
                 </div>
                 <div className="details-middle">
@@ -167,8 +182,8 @@ console.log("PARAMs++",searchParams)
                 <tbody>
                   <tr>
                     <td>
-                      {job.job_posted_at_datetime_utc
-                        ? new Date(job.job_posted_at_datetime_utc).toLocaleDateString("da-DK", {
+                      {jobDetailsData.job_posted_at_datetime_utc
+                        ? new Date(jobDetailsData.job_posted_at_datetime_utc).toLocaleDateString("da-DK", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
@@ -177,8 +192,8 @@ console.log("PARAMs++",searchParams)
                           })
                         : "Ukendt dato"}
                     </td>
-                    <td>{job.job_employment_type}</td>
-                    <td>{job.job_location}</td>
+                    <td>{jobDetailsData.job_employment_type}</td>
+                    <td>{jobDetailsData.job_location}</td>
                   </tr>
                 </tbody>
                 </div>
@@ -187,7 +202,7 @@ console.log("PARAMs++",searchParams)
                   
 
                   <p className="job-description">
-                    {job.job_description.split("\n").map((line, index) => (
+                    {jobDetailsData.job_description.split("\n").map((line: string , index: string) => (
                       <React.Fragment key={index}>
                         {line}
                         <br />
@@ -196,12 +211,10 @@ console.log("PARAMs++",searchParams)
                   </p>
                 </div>
               </li>
-          ))}  
+          
           
         </ul>
         
-      ) : (
-        <p>Jobopslag kunne ikke vises.</p>
       )}
       </div>
     </div>
