@@ -10,7 +10,7 @@ function JobOptionsPage() {
   const { Option } = Select;
 
   const [searchParams, setSearchParams] = useState<JobSearchParams>({
-    query: "asdasdasd",
+    query: "",
     page:1,
     num_pages:1,
     country:"dk",
@@ -28,7 +28,7 @@ const [selectedJobId, setSelectedJobId] = useState<string | undefined>();
 
 //Fetching from DB:
 const {data:db,isLoading,isError} = useFetchDBJobsByID(searchId);
-const {data:dbd} = useFetchDBDetailsByID(selectedJobId);
+const {data:dbd,isLoading:isloadingSelect,isError:isErrorselect} = useFetchDBDetailsByID(selectedJobId);
 
 
 

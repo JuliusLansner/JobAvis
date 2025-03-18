@@ -5,7 +5,7 @@ import { JobSearchParams } from "../@types/JobSearchParams";
 
 export const useFetchJobs = (searchParams:JobSearchParams) =>{
    return useQuery({
-        queryKey:["fetchData"],
+        queryKey:["fetchData",searchParams],
         queryFn: async() => {
             const {data} = await searchAxios.get("/search",{
                 
@@ -44,7 +44,12 @@ export const useFetchDetailsById = (id:string | undefined) =>{
     return useQuery({
         queryKey:["fetchDetails",id],
         queryFn:async() =>{
-            const {data} = await searchAxios.get("/job-details/"+id)
+            const {data} = await searchAxios.get("/job-details",{
+                params:{
+                    job_id:id,
+                    country:"dk"
+                }
+            })
             return data;
         }
     })
