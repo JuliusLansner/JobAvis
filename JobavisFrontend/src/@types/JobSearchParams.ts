@@ -8,5 +8,5 @@ export interface JobSearchParams{
     employment_types?: string;
     job_requirements?: string;
     radius?: number;
-    keywords?:string;
+    keyWords?:string;
 }

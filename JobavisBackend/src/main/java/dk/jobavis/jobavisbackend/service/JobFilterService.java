@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
+ * ****COMMENTS AND DOCUMENTATION BY CHATGBT****
  * Service for filtering and ranking job postings using a TF-IDF based textual analysis.
  *
  * <p>This service converts a list of job postings (each represented by a {@link JobData} object)
@@ -121,7 +122,7 @@ public class JobFilterService {
         // 8. Build a JSearchResponse with the sorted job postings.
         JSearchResponse response = new JSearchResponse();
         response.setData(sortedJobData);
-        // Optionally, set additional fields such as status, request_id, or parameters if needed.
+
 
         return response;
     }
