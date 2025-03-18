@@ -1,9 +1,10 @@
 import React, {  useState } from "react";
-import { useFetchDBJobsByID, useFetchDetailsById, useFetchJobs,useFetchDBDetailsByID } from "../queries/queries";
+import { useFetchDBJobsByID, useFetchDetailsById, useFetchJobs,useFetchDBDetailsByID, usePrefetchJobDetails } from "../queries/queries";
 import { JobSearchParams } from "../@types/JobSearchParams";
 import { JobData } from "../@types/JobData";
 import { Select } from "antd";
 import { JobDetails } from "../@types/JobDetails";
+
 
 function JobOptionsPage() {
 
@@ -29,6 +30,17 @@ const [selectedJobId, setSelectedJobId] = useState<string | undefined>();
 //Fetching from DB:
 const {data:db,isLoading,isError} = useFetchDBJobsByID(searchId);
 const {data:dbd,isLoading:isloadingSelect,isError:isErrorselect} = useFetchDBDetailsByID(selectedJobId);
+
+// Prefetching job details on hover
+const prefetchJobDetails = usePrefetchJobDetails();
+
+
+// Prevent API calls when clicking the same job and set the selected job ID
+const handleJobClick = (jobId: string) => {
+  if (selectedJobId !== jobId) {
+      setSelectedJobId(jobId);
+  }
+};
 
 
 
@@ -123,10 +135,12 @@ console.log("PARAMs++",searchParams)
           {db.data.map((job: JobData) => (
             <li className={`single-job ${selectedJobId === job.job_id ? "active" : ""}`} 
                 key={job.job_id}
-                onClick={() => {
+                onClick={() => handleJobClick(job.job_id)}
+                onMouseEnter={() => prefetchJobDetails(job.job_id)} // Prefetch on hover
+                /*onClick={() => {
                   console.log("Clicked job ID:", job.job_id);
                   setSelectedJobId(job.job_id);
-                }} // Set job ID on click
+                }}*/ // Set job ID on click
                 >
               <div className="jobcontainer-left">
               <img src={job.employer_logo} className="employer-logo"/>
@@ -147,7 +161,7 @@ console.log("PARAMs++",searchParams)
 
         
         ) : (
-        <p>Ingen resultater blev fundet.</p>
+        <p>Søg efter jobs ved brug af filtrene ovenover.</p>
       )}
 
 
