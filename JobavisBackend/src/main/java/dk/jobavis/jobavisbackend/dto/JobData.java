@@ -16,4 +16,5 @@ public class JobData {
     private String job_employment_type;
     private String employer_logo;
     private String job_posted_at;
+    private String Job_description;
 }

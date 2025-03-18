@@ -4,6 +4,7 @@ import dk.jobavis.jobavisbackend.dto.JSearchResponse;
 import dk.jobavis.jobavisbackend.dto.JobData;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
 import dk.jobavis.jobavisbackend.service.JobDBService;
+import dk.jobavis.jobavisbackend.service.JobFilterService;
 import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,12 @@ public class JSearchController{
     private final JSearchApiService jsearchApiService;
     private final JobDBService jobDBService;
     private static final Logger logger = LoggerFactory.getLogger(JSearchController.class);
+    private final JobFilterService jobFilterService;
 
-    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService){
+    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService, JobFilterService jobFilterService){
         this.jsearchApiService = jsearchApiService;
         this.jobDBService = jobDBService;
+        this.jobFilterService = jobFilterService;
     }
 
     @GetMapping("/search")
@@ -41,21 +44,27 @@ public class JSearchController{
             @RequestParam(name = "employment_types",defaultValue = "FULLTIME") String employment_types,
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
             @RequestParam(required = false,defaultValue = "500") int radius,
-            @RequestParam(required = false) String keyWords,
-            @RequestParam(required = false) String icon
+            @RequestParam(name = "keywords",required = false) String keyWords
+
     ){
 
         try{
             logger.info("Starting job search with query={}", query);
             JSearchResponse response = jsearchApiService.searchJobs(query,page,num_pages,country,language,date_posted,employment_types,job_requirements,radius);
+
             jobDBService.saveJobSearch(query,response);
-            // for future filtration needs
-            //List<JobData> jobList = response.getData();
 
 
+            List<JobData> jobList = response.getData();
+            if(jobList == null || jobList.isEmpty()){
+                return ResponseEntity.ok((JSearchResponse) List.of());
+            }
+
+            String combineQAndK = query +(keyWords != null ? " "+ keyWords: " ");
+            JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobList, combineQAndK);
 
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(filteredResponse);
         }catch (Exception e){
             logger.error("error: ",e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
