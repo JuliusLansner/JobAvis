@@ -43,17 +43,17 @@ public class JobFilterService {
      */
 //comments due to the complexity of this subject
     public JSearchResponse tfidfFilter(List<JobData> jobList, String keyWordsAndQuery) {
-        // 1. Build documents from job title + job description (all in lowercase)
+        // Build documents from job title + job description (all in lowercase)
         List<String> documents = jobList.stream()
                 .map(job -> (job.getJob_title() + " " + job.getJob_description()).toLowerCase())
                 .toList();
 
-        // 2. Tokenize the documents into lists of words
+        // Tokenize the documents into lists of words
         List<List<String>> tokenizedDocs = documents.stream()
                 .map(doc -> Arrays.asList(doc.split("\\s+")))
                 .toList();
 
-        // 3. Compute document frequency for each term across all documents
+        // Compute document frequency for each term across all documents
         Map<String, Integer> docFrequency = new HashMap<>();
         List<Map<String, Integer>> termCountsPerDoc = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class JobFilterService {
             }
         }
 
-        // 4. Build a TF-IDF vector for each document
+        // Build a TF-IDF vector for each document
         List<Map<String, Double>> docVectors = new ArrayList<>();
         int totalDocs = tokenizedDocs.size();
         for (int i = 0; i < tokenizedDocs.size(); i++) {
@@ -87,7 +87,7 @@ public class JobFilterService {
             docVectors.add(tfidfVector);
         }
 
-        // 5. Build TF-IDF vector for the user query
+        // Build TF-IDF vector for the user query
         String[] queryTokens = keyWordsAndQuery.toLowerCase().split("\\s+");
         Map<String, Integer> queryTermCount = new HashMap<>();
         for (String token : queryTokens) {
@@ -104,7 +104,7 @@ public class JobFilterService {
             queryVector.put(term, tf * idf);
         }
 
-        // 6. Compute cosine similarity between each document vector and the query vector
+        // Compute cosine similarity between each document vector and the query vector
         ComputeCosineSimilarity ccs = new ComputeCosineSimilarity();
         List<JobDataScore> scoredDocs = new ArrayList<>();
         for (int i = 0; i < jobList.size(); i++) {
@@ -114,12 +114,12 @@ public class JobFilterService {
         // Sort jobs in descending order based on their similarity score
         scoredDocs.sort((a, b) -> Double.compare(b.getScore(), a.getScore()));
 
-        // 7. Extract the sorted list of JobData
+        // Extract the sorted list of JobData
         List<JobData> sortedJobData = scoredDocs.stream()
                 .map(JobDataScore::getJobData)
                 .toList();
 
-        // 8. Build a JSearchResponse with the sorted job postings.
+        // Build a JSearchResponse with the sorted job postings.
         JSearchResponse response = new JSearchResponse();
         response.setData(sortedJobData);
 
