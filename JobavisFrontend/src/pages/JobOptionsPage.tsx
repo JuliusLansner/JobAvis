@@ -15,10 +15,11 @@ function JobOptionsPage() {
     page:1,
     num_pages:1,
     country:"dk",
-    language:"en",
+    language:"da",
     date_posted:"all",
     employment_types:"FULLTIME",
-    radius:500
+    radius:0,
+    keyWords:""
 
 });
 
@@ -74,7 +75,8 @@ console.log("PARAMs++",searchParams)
         />
 
         <input
-          value=""
+          value={searchParams.keyWords}
+          onChange={(e) => setSearchParams({...searchParams,keyWords:e.target.value})}
           placeholder="Keywords..."
           className="keyword-input"
         />
