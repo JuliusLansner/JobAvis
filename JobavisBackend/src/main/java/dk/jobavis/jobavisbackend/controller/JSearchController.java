@@ -2,6 +2,7 @@ package dk.jobavis.jobavisbackend.controller;
 
 import dk.jobavis.jobavisbackend.dto.JSearchResponse;
 import dk.jobavis.jobavisbackend.dto.JobData;
+import dk.jobavis.jobavisbackend.repository.JobDetailsResultRepository;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
 import dk.jobavis.jobavisbackend.service.JobDBService;
 import dk.jobavis.jobavisbackend.service.JobFilterService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,11 +28,13 @@ public class JSearchController{
     private final JobDBService jobDBService;
     private static final Logger logger = LoggerFactory.getLogger(JSearchController.class);
     private final JobFilterService jobFilterService;
+    private final JobDetailsResultRepository jobDetailsResultRepository;
 
-    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService, JobFilterService jobFilterService){
+    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService, JobFilterService jobFilterService, JobDetailsResultRepository jobDetailsResultRepository){
         this.jsearchApiService = jsearchApiService;
         this.jobDBService = jobDBService;
         this.jobFilterService = jobFilterService;
+        this.jobDetailsResultRepository = jobDetailsResultRepository;
     }
 
     @GetMapping("/search")
@@ -56,9 +60,11 @@ public class JSearchController{
 
 
             List<JobData> jobList = response.getData();
-            if(jobList == null || jobList.isEmpty()){
-                return ResponseEntity.ok((JSearchResponse) List.of());
-            }
+            /*if(jobList == null || jobList.isEmpty()){
+                JSearchResponse emptyResponse = new JSearchResponse();
+                emptyResponse.setData(new ArrayList<>());
+                return ResponseEntity.ok(emptyResponse);
+            }*/
 
             String combineQAndK = query +(keyWords != null ? " "+ keyWords: " ");
             JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobList, combineQAndK);

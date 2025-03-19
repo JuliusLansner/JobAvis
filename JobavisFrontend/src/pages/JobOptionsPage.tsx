@@ -10,32 +10,22 @@ function JobOptionsPage() {
 
   const { Option } = Select;
 
-  const [searchParams, setSearchParams] = useState<JobSearchParams>({
-    query: "",
-    page:1,
-    num_pages:1,
-    country:"dk",
-    language:"da",
-    date_posted:"all",
-    employment_types:"FULLTIME",
-    radius:0,
-    keyWords:""
+  const [searchParams, setSearchParams] = useState<JobSearchParams>();
+  const [searchQuery,setSearchQuery] = useState<JobSearchParams>()
 
-});
+//const [searchId, setSearchId] = useState<string>();
 
-const [searchId, setSearchId] = useState<string | undefined>();
 
-// State for selected job ID
-const [selectedJobId, setSelectedJobId] = useState<string | undefined>();
 
 //Fetching from DB:
-const {data:db,isLoading,isError} = useFetchDBJobsByID(searchId);
-const {data:dbd,isLoading:isloadingSelect,isError:isErrorselect} = useFetchDBDetailsByID(selectedJobId);
+//const {data:db,isLoading:isldb,isError:isle} = useFetchDBJobsByID(searchId);
+//const {data:dbx,isLoading:isloadingSelect,isError:isErrorselect} = useFetchDBDetailsByID(selectedJobId);
 
 // Prefetching job details on hover
 const prefetchJobDetails = usePrefetchJobDetails();
 
-
+// State for selected job ID
+const [selectedJobId, setSelectedJobId] = useState<string>();
 // Prevent API calls when clicking the same job and set the selected job ID
 const handleJobClick = (jobId: string) => {
   if (selectedJobId !== jobId) {
@@ -50,12 +40,16 @@ console.log("SID++:"+selectedJobId)
 
 
 //Fetching from RapidAPI:
-//const {data:details} = useFetchDetailsById();
-//const { data, isLoading, isError } = useFetchJobs();
+const {data:details} = useFetchDetailsById(selectedJobId);
+
+
+const { data:dbd, isLoading, isError } = useFetchJobs(searchParams);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchId(searchParams.query) 
+    setSearchParams(searchQuery)
+
+
   }; 
 
 
@@ -66,58 +60,54 @@ console.log("PARAMs++",searchParams)
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <input
-          value={searchParams.query}
+          value={searchQuery?.query || ""}
           onChange={(e) =>
-            setSearchParams({ ...searchParams, query: e.target.value })
+            setSearchQuery({ ...searchQuery, query: e.target.value })
           }
           placeholder="Søg..."
           className="query-input"
         />
 
-        <input
-          value={searchParams.keyWords}
-          onChange={(e) => setSearchParams({...searchParams,keyWords:e.target.value})}
-          placeholder="Keywords..."
-          className="keyword-input"
-        />
-       
+    
        
         <Select
-          value={searchParams.country}
-          onChange={(value) => setSearchParams({ ...searchParams, country: value })}
+          value={searchQuery?.country ||"Lokation"}
+          onChange={(value) => setSearchQuery({ ...searchQuery, country: value })}
           placeholder="Lokation"
         >
           <Option value="dk">Danmark</Option>
         </Select>
 
         <Select
-          value={searchParams.employment_types}
-          onChange={(value) => setSearchParams({ ...searchParams, employment_types: value })}
+          value={searchQuery?.employment_types || "Type"}
+          onChange={(value) => setSearchQuery({ ...searchQuery, employment_types: value })}
           placeholder="Jobtype"
         >
           <Option value="FULLTIME">Fuldtid</Option>
-          <Option value="">Deltid</Option>
-          <Option value="">Kontrakt</Option>
-          <Option value="">Praktikant</Option>
-          <Option value="">Andet</Option>
+          <Option value="PARTTIME">Deltid</Option>
+          <Option value="CONTRACTOR">Kontrakt</Option>
+          <Option value="INTERN">Praktikant</Option>
         </Select>
 
 
         <Select
-          value={searchParams.date_posted}
-          onChange={(value) => setSearchParams({ ...searchParams, date_posted: value})}
+          value={searchQuery?.date_posted || "Opslået"}
+          onChange={(value) => setSearchQuery({ ...searchQuery, date_posted: value})}
           placeholder="Opslået"
         >
           <Option value="all">Alle tidspunkter</Option>
-          <Option value="">Seneste måned</Option>
-          <Option value="">Seneste uge</Option>
-          <Option value="">Seneste 24 timer</Option>
+          <Option value="month">Seneste måned</Option>
+          <Option value="week">Seneste uge</Option>
+          <Option value="3days">Seneste 3 dage</Option>
+          <Option value="today">Seneste 24 timer</Option>
+          
         </Select>
 
         <input
-          value={searchParams.radius}
+          type="number"
+          value={searchQuery?.radius}
           onChange={(e) =>
-            setSearchParams({ ...searchParams, radius: Number(e.target.value) })
+            setSearchQuery({ ...searchQuery, radius: (e.target.value) })
           }
           placeholder="Radius"
           className="radius-input"
@@ -132,9 +122,9 @@ console.log("PARAMs++",searchParams)
 
 
       <div className="job-results">
-      {db && db.data && db.data.length > 0 ? (
+      {dbd && dbd.data && dbd.data.length > 0 ? (
         <ul className="jobs-list">
-          {db.data.map((job: JobData) => (
+          {dbd.data.map((job: JobData) => (
             <li className={`single-job ${selectedJobId === job.job_id ? "active" : ""}`} 
                 key={job.job_id}
                 onClick={() => handleJobClick(job.job_id)}
@@ -163,13 +153,15 @@ console.log("PARAMs++",searchParams)
 
         
         ) : (
+
+          
         <p>Søg efter jobs ved brug af filtrene ovenover.</p>
       )}
+      
 
-
-      {selectedJobId && dbd && dbd.data && dbd.data.length > 0 && (
+      {selectedJobId && details && details.data && details.data.length > 0 && (
         <ul className="job-details">
-          {dbd.data
+          {details.data
             .filter((job: JobDetails) => job.job_id === selectedJobId) // Match Job ID
             .map((job: JobDetails) => (
               <li className="single-job-details" key={job.job_id}>
@@ -201,9 +193,7 @@ console.log("PARAMs++",searchParams)
                             ? new Date(job.job_posted_at_datetime_utc).toLocaleDateString("da-DK", {
                                 year: "numeric",
                                 month: "long",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
+                                day: "numeric"
                               })
                             : "Ukendt dato"}
                         </td>

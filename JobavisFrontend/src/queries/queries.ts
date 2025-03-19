@@ -4,16 +4,18 @@ import { JobSearchParams } from "../@types/JobSearchParams";
 import { useQueryClient } from "@tanstack/react-query";
 
 
-export const useFetchJobs = (searchParams:JobSearchParams) =>{
+export const useFetchJobs = (searchParams:JobSearchParams | undefined) =>{
    return useQuery({
         queryKey:["fetchData",searchParams],
         queryFn: async() => {
+            if (!searchParams) return Promise.reject(new Error("No search parameters provided")); 
             const {data} = await searchAxios.get("/search",{
                 
              params:searchParams
             });
             return data;
         },
+        enabled: !!searchParams,
         staleTime:600000
     });
 }
@@ -47,18 +49,23 @@ export const useFetchDBDetailsByID = (id:string |undefined) =>{
     })
 }
 
-export const useFetchDetailsById = (id:string | undefined) =>{
+export const useFetchDetailsById = (id:string |undefined) =>{
     return useQuery({
         queryKey:["fetchDetails",id],
         queryFn:async() =>{
+            if (!id) return Promise.reject(new Error("No ID provided"));
             const {data} = await searchAxios.get("/job-details",{
                 params:{
                     job_id:id,
                     country:"dk"
                 }
             })
+            
             return data;
-        }
+        },
+        staleTime:600000,
+        enabled:!!id
+
     })
 }
 
@@ -71,9 +78,16 @@ export const usePrefetchJobDetails = () => {
         queryClient.prefetchQuery({
             queryKey: ["fetchDbD", jobId], 
             queryFn: async () => {
-                const { data } = await searchAxios.get(`/dbfetchdetails/${jobId}`);
+                if (!jobId) return Promise.reject(new Error("No ID provided"));
+                const { data } = await searchAxios.get("/job-details",{
+                    params:{
+                        job_id:jobId,
+                        country:"dk"
+                    }
+                });
                 return data;
-            }
+            },
+            staleTime:600000
         });
     };
 

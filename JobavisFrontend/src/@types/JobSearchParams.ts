@@ -1,5 +1,5 @@
 export interface JobSearchParams{
-    query: string;
+    query?: string;
     page?: number;
     num_pages?: number;
     country?: string;
@@ -7,6 +7,6 @@ export interface JobSearchParams{
     date_posted?: string;
     employment_types?: string;
     job_requirements?: string;
-    radius?: number;
+    radius?: string;
     keyWords?:string;
 }

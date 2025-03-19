@@ -35,7 +35,6 @@ public class JDetailsController{
             logger.info("Starting job details search with ID={}", jobId);
             JDetailsResponse response = jSearchApiService.jobDetails(jobId,country);
             jobDBService.saveJobDetails(jobId,response);
-            System.out.println("JOBID++: "+jobId+" RESPONSE++: "+response);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
