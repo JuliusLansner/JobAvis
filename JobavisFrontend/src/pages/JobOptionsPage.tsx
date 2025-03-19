@@ -6,11 +6,17 @@ import { Select } from "antd";
 import { JobDetails } from "../@types/JobDetails";
 
 
-function JobOptionsPage() {
+interface JobOptionsPageProps {
+  searchParams: JobSearchParams | undefined;
+  setSearchParams: React.Dispatch<React.SetStateAction<JobSearchParams | undefined>>;
+}
+
+
+function JobOptionsPage({ searchParams, setSearchParams }: JobOptionsPageProps) {
 
   const { Option } = Select;
 
-  const [searchParams, setSearchParams] = useState<JobSearchParams>();
+  //const [searchParams, setSearchParams] = useState<JobSearchParams>(); /// NOT BEING USED ANYMORE
   const [searchQuery,setSearchQuery] = useState<JobSearchParams>()
 
 //const [searchId, setSearchId] = useState<string>();
@@ -59,14 +65,12 @@ console.log("PARAMs++",searchParams)
 
     <div className="form-container">
       <form onSubmit={handleSubmit}>
-        <input
-          value={searchQuery?.query || ""}
-          onChange={(e) =>
-            setSearchQuery({ ...searchQuery, query: e.target.value })
-          }
-          placeholder="Søg..."
-          className="query-input"
-        />
+      <input
+            value={searchQuery?.query || ""}
+            onChange={(e) => setSearchQuery({ ...searchQuery, query: e.target.value })}
+            placeholder="Søg..."
+            className="query-input"
+          />
 
     
        
@@ -89,29 +93,6 @@ console.log("PARAMs++",searchParams)
           <Option value="INTERN">Praktikant</Option>
         </Select>
 
-
-        <Select
-          value={searchQuery?.date_posted || "Opslået"}
-          onChange={(value) => setSearchQuery({ ...searchQuery, date_posted: value})}
-          placeholder="Opslået"
-        >
-          <Option value="all">Alle tidspunkter</Option>
-          <Option value="month">Seneste måned</Option>
-          <Option value="week">Seneste uge</Option>
-          <Option value="3days">Seneste 3 dage</Option>
-          <Option value="today">Seneste 24 timer</Option>
-          
-        </Select>
-
-        <input
-          type="number"
-          value={searchQuery?.radius}
-          onChange={(e) =>
-            setSearchQuery({ ...searchQuery, radius: (e.target.value) })
-          }
-          placeholder="Radius"
-          className="radius-input"
-        />
 
         <button className="search-btn" type="submit">Søg</button>
       </form>
@@ -155,7 +136,8 @@ console.log("PARAMs++",searchParams)
         ) : (
 
           
-        <p>Søg efter jobs ved brug af filtrene ovenover.</p>
+        /*<p>Søg efter jobs ved brug af filtrene ovenover.</p>*/
+        ""
       )}
       
 
