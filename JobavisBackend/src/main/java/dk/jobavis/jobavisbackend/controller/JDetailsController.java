@@ -32,7 +32,7 @@ public class JDetailsController{
     ){
 
         try {
-            logger.info("Starting job details search with ID={}", jobId);
+            logger.info("fetching job details search with ID={}", jobId);
             JDetailsResponse response = jSearchApiService.jobDetails(jobId,country);
             jobDBService.saveJobDetails(jobId,response);
             return ResponseEntity.ok(response);

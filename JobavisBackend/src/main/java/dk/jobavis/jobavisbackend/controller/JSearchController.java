@@ -5,6 +5,7 @@ import dk.jobavis.jobavisbackend.dto.JobData;
 import dk.jobavis.jobavisbackend.repository.JobDetailsResultRepository;
 import dk.jobavis.jobavisbackend.service.JSearchApiService;
 import dk.jobavis.jobavisbackend.service.JobDBService;
+import dk.jobavis.jobavisbackend.service.JobDetailsPrefetchService;
 import dk.jobavis.jobavisbackend.service.JobFilterService;
 import org.apache.coyote.Response;
 import org.slf4j.Logger;
@@ -29,12 +30,14 @@ public class JSearchController{
     private static final Logger logger = LoggerFactory.getLogger(JSearchController.class);
     private final JobFilterService jobFilterService;
     private final JobDetailsResultRepository jobDetailsResultRepository;
+    private final JobDetailsPrefetchService jobDetailsPrefetchService;
 
-    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService, JobFilterService jobFilterService, JobDetailsResultRepository jobDetailsResultRepository){
+    public JSearchController(JSearchApiService jsearchApiService, JobDBService jobDBService, JobFilterService jobFilterService, JobDetailsResultRepository jobDetailsResultRepository, JobDetailsPrefetchService jobDetailsPrefetchService){
         this.jsearchApiService = jsearchApiService;
         this.jobDBService = jobDBService;
         this.jobFilterService = jobFilterService;
         this.jobDetailsResultRepository = jobDetailsResultRepository;
+        this.jobDetailsPrefetchService = jobDetailsPrefetchService;
     }
 
     @GetMapping("/search")
@@ -69,7 +72,7 @@ public class JSearchController{
             String combineQAndK = query +(keyWords != null ? " "+ keyWords: " ");
             JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobList, combineQAndK);
 
-
+            jobDetailsPrefetchService.prefetchDetails(jobList,country);
             return ResponseEntity.ok(filteredResponse);
         }catch (Exception e){
             logger.error("error: ",e);
