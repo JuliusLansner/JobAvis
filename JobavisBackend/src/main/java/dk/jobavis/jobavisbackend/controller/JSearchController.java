@@ -51,7 +51,10 @@ public class JSearchController{
             @RequestParam(name = "employment_types",defaultValue = "FULLTIME") String employment_types,
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
             @RequestParam(required = false,defaultValue = "500") int radius,
-            @RequestParam(name = "keywords",required = false) String keyWords
+            @RequestParam(name = "keywords",required = false) String keyWords,
+            @RequestParam(name = "job_location",required = false) String job_location
+
+
 
     ){
 
@@ -63,13 +66,13 @@ public class JSearchController{
 
 
             List<JobData> jobList = response.getData();
-            /*if(jobList == null || jobList.isEmpty()){
-                JSearchResponse emptyResponse = new JSearchResponse();
-                emptyResponse.setData(new ArrayList<>());
-                return ResponseEntity.ok(emptyResponse);
-            }*/
-
+            List<String> jobLocations = new ArrayList<>();
+            for (JobData job : jobList){
+                jobLocations.add(job.getJob_location());
+            }
+            System.out.println(job_location);
             String combineQAndK = query +(keyWords != null ? " "+ keyWords: " ");
+
             JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobList, combineQAndK);
 
             jobDetailsPrefetchService.prefetchDetails(jobList,country);

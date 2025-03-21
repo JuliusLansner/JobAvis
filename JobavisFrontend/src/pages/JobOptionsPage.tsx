@@ -4,6 +4,7 @@ import { JobSearchParams } from "../@types/JobSearchParams";
 import { JobData } from "../@types/JobData";
 import { Select } from "antd";
 import { JobDetails } from "../@types/JobDetails";
+import { City} from 'country-state-city';
 
 
 function JobOptionsPage() {
@@ -33,7 +34,8 @@ const handleJobClick = (jobId: string) => {
   }
 };
 
-
+const city = City.getCitiesOfCountry("DK");
+console.log(city)
 
 console.log("SID++:"+selectedJobId)
 
@@ -135,7 +137,7 @@ console.log("PARAMs++",searchParams)
                 }}*/ // Set job ID on click
                 >
               <div className="jobcontainer-left">
-              <img src={job.employer_logo} className="employer-logo"/>
+              <img src={job.employer_logo || ""} className="employer-logo"/>
               </div>
               <div className="jobcontainer-middle">
                 <h3 className="job-title">{job.job_title}</h3>
@@ -159,7 +161,7 @@ console.log("PARAMs++",searchParams)
       )}
       
 
-      {selectedJobId && details && details.data && details.data.length > 0 && (
+      {dbd && dbd.data && dbd.data.length > 0 && selectedJobId && details && details.data && details.data.length > 0 &&  (
         <ul className="job-details">
           {details.data
             .filter((job: JobDetails) => job.job_id === selectedJobId) // Match Job ID
