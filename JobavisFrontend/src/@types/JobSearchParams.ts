@@ -9,4 +9,5 @@ export interface JobSearchParams{
     job_requirements?: string;
     radius?: string;
     keyWords?:string;
+    job_location?:string;
 }

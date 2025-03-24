@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -50,11 +52,9 @@ public class JSearchController{
             @RequestParam(name = "date_posted",defaultValue = "all") String date_posted,
             @RequestParam(name = "employment_types",defaultValue = "FULLTIME") String employment_types,
             @RequestParam(name = "job_requirements",required = false) String job_requirements,
-            @RequestParam(required = false,defaultValue = "500") int radius,
+            @RequestParam(required = false,defaultValue = "200") int radius,
             @RequestParam(name = "keywords",required = false) String keyWords,
-            @RequestParam(name = "job_location",required = false) String job_location
-
-
+            @RequestParam(name = "job_location",required = false,defaultValue = "") String job_location
 
     ){
 
@@ -64,18 +64,29 @@ public class JSearchController{
 
             jobDBService.saveJobSearch(query,response);
 
-
             List<JobData> jobList = response.getData();
-            List<String> jobLocations = new ArrayList<>();
-            for (JobData job : jobList){
-                jobLocations.add(job.getJob_location());
+            List<JobData> jobListWithLocation = new ArrayList<>();
+
+            //If the job location  from the JSON matches the user query, add to list
+            //if User gives no job in their query, add regardless. The location will be filtered less optimally through query.
+            for(JobData job : jobList){
+                if(Objects.equals(job.getJob_location(),job_location)){
+                    System.out.println(job.getJob_location());
+                    jobListWithLocation.add(job);
+                }
+                if(job_location == ""){
+                    jobListWithLocation.add(job);
+                }
+
             }
-            System.out.println(job_location);
-            String combineQAndK = query +(keyWords != null ? " "+ keyWords: " ");
 
-            JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobList, combineQAndK);
 
-            jobDetailsPrefetchService.prefetchDetails(jobList,country);
+
+            String combineQAndK = query;
+
+            JSearchResponse filteredResponse = jobFilterService.tfidfFilter(jobListWithLocation, combineQAndK);
+
+            jobDetailsPrefetchService.prefetchDetails(jobListWithLocation,country);
             return ResponseEntity.ok(filteredResponse);
         }catch (Exception e){
             logger.error("error: ",e);
