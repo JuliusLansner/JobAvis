@@ -1,4 +1,5 @@
-Java Spring Boot - TypeScript - PostgreSQL
+
+Java Spring Boot - TypeScript - PostgreSQL with UI/UX help from Betina Svendsen
 
 
 JobAvis is a personal project intent on simplifying the process of finding suitable jobs. It is however not as functional as I would've hoped, due to a lack of reliable APIs for the Danish job market.
