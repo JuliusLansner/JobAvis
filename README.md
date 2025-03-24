@@ -35,3 +35,15 @@ An vague search query of "java udvikler":
 
 
 ![JobAvis query search 2](JobavisFrontend/src/assets/jobavis3.png)
+
+
+Current efforts to improve JobAvis is halted, until i find a more suitable API. 
+
+
+Job boards have a plethora of legalities protecting their job listings from scraping(See:linkedin robot.txt), as well as not providing APIs. 
+
+
+This leads to private people web scraping and hosting their own APIs, which causes unstable and especially when moving away from the US, somewhat unusable API implementations. 
+ 
+
+Such is life.
